@@ -1,0 +1,137 @@
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+
+function CountdownPreview() {
+  const [secondsLeft] = useState(3600);
+  const hours = Math.floor(secondsLeft / 3600);
+  const minutes = Math.floor((secondsLeft % 3600) / 60);
+
+  return (
+    <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-900/80 px-4 py-1.5 text-xs text-slate-200">
+      <span className="h-2 w-2 rounded-full bg-emerald-400" />
+      Surprise goes live in{' '}
+      <span className="font-semibold text-love-gold">
+        {hours}h {minutes}m
+      </span>
+    </div>
+  );
+}
+
+export function PreviewPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const audioRef = useRef(null);
+  const state = location.state;
+
+  useEffect(() => {
+    if (!state) {
+      navigate('/templates');
+    }
+  }, [state, navigate]);
+
+  if (!state) return null;
+
+  const { customization, template } = state;
+
+  const handleProceedToPayment = () => {
+    navigate('/payment', {
+      state
+    });
+  };
+
+  return (
+    <section className="section mt-8">
+      <p className="pill">Step 3 · Preview your page</p>
+      <h1 className="mt-3 text-2xl font-semibold text-slate-50 sm:text-3xl">
+        This is how your surprise website will feel
+      </h1>
+      <p className="mt-2 max-w-2xl text-sm text-slate-400">
+        We have added a watermark to this preview. After payment, you will receive a clean,
+        shareable link like <span className="font-mono">lovepages.site/ananya-birthday</span>.
+      </p>
+
+      <div className="card mt-6 overflow-hidden">
+        <div
+          className="relative grid gap-6 rounded-3xl border border-slate-700/80 bg-slate-900/80 p-6 md:grid-cols-[1.4fr,1fr]"
+          style={{
+            borderColor: customization.themeColor
+          }}
+        >
+          <div>
+            <div className="flex items-center justify-between gap-2 text-xs text-slate-300">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-[10px]">
+                  ❤
+                </span>
+                <div>
+                  <p className="font-semibold">
+                    {customization.name || 'Your special someone'} ·{' '}
+                    <span className="text-love-pink">
+                      {template?.category || 'Custom surprise'}
+                    </span>
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    A LovePages Studio experience · Preview version
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              <h2 className="text-xl font-semibold text-slate-50">
+                For {customization.name || 'you'}, with all my heart.
+              </h2>
+              <p className="text-sm leading-relaxed text-slate-200 whitespace-pre-line">
+                {customization.message}
+              </p>
+              <CountdownPreview />
+            </div>
+
+            {!!customization.photos?.length && (
+              <div className="mt-5 grid grid-cols-3 gap-2">
+                {customization.photos.slice(0, 6).map((src, idx) => (
+                  <div
+                    key={idx}
+                    className="relative h-24 overflow-hidden rounded-xl border border-slate-700/70"
+                  >
+                    <img src={src} alt="" className="h-full w-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="relative space-y-4 text-xs text-slate-300">
+            <div className="rounded-2xl border border-dashed border-love-pink/70 bg-slate-950/70 p-4 text-center uppercase tracking-[0.2em] text-love-pink/80">
+              Preview Version · Watermarked
+            </div>
+            <p>
+              Background music:{' '}
+              <span className="font-medium text-slate-100">{customization.music.label}</span>
+            </p>
+            <audio
+              ref={audioRef}
+              controls
+              className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/80 p-2"
+            >
+              <source src={customization.music.url} type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+            <p className="mt-3 text-[11px] text-slate-400">
+              On the final website, we will remove the watermark, optimize your photos for fast
+              loading, and host the page on a unique URL you can share.
+            </p>
+            <button
+              type="button"
+              onClick={handleProceedToPayment}
+              className="btn-primary mt-2 w-full justify-center"
+            >
+              Looks good · Continue to payment
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
