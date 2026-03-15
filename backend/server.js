@@ -21,7 +21,9 @@ app.use(
   })
 );
 app.use(express.json({ limit: '10mb' }));
-
+app.get("/", (req, res) => {
+  res.send("LovePages Studio API is running 🚀");
+});
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'LovePages Studio API' });
 });
@@ -29,6 +31,8 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/templates', templatesRouter);
 app.use('/api/websites', websitesRouter);
+
+
 app.use('/api/admin', adminRouter);
 app.use('/api/uploads', uploadsRouter);
 
