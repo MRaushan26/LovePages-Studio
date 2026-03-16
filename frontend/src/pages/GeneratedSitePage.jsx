@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { useLocation, useParams } from 'react-router-dom';
 import api from '../services/api.js';
 import { FloatingHearts } from '../components/FloatingHearts.jsx';
+import { ShareLinkModal } from '../components/ShareLinkModal.jsx';
+import { useToast } from '../components/ToastContext.jsx';
 
 function useCountdown(targetDate) {
   const [diff, setDiff] = useState(() => {
@@ -37,9 +39,11 @@ export function GeneratedSitePage() {
   const justCreated = location.state?.justCreated;
   const fallbackData = location.state?.siteData;
 
+  const toast = useToast();
   const [data, setData] = useState(fallbackData || null);
   const [loading, setLoading] = useState(!fallbackData);
   const [error, setError] = useState('');
+  const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
     // If we already have data from navigation state, skip the API call.
@@ -176,22 +180,32 @@ export function GeneratedSitePage() {
               <p className="text-xs text-emerald-400">
                 Your link is live! Click below to copy the URL and share it.
               </p>
-              <button
-                type="button"
-                onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(shareUrl);
-                    alert('Link copied to clipboard!');
-                  } catch {
-                    alert('Unable to copy automatically. Please copy the URL manually.');
-                  }
-                }}
-                className="btn-primary rounded-full px-4 py-2 text-xs"
-              >
-                Copy shareable link
-              </button>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(shareUrl);
+                      toast.addToast('Link copied to clipboard!', 'success');
+                    } catch {
+                      toast.addToast('Unable to copy. Use the share button below.', 'error');
+                    }
+                  }}
+                  className="btn-primary rounded-full px-4 py-2 text-xs"
+                >
+                  Copy link
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShareOpen(true)}
+                  className="btn-ghost rounded-full px-4 py-2 text-xs"
+                >
+                  Share (QR)
+                </button>
+              </div>
             </div>
           )}
+          <ShareLinkModal open={shareOpen} onClose={() => setShareOpen(false)} url={shareUrl} />
         </section>
 
         <section className="section pb-10">

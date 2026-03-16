@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout.jsx';
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
+import { ToastProvider } from './components/ToastContext.jsx';
 
 const LandingPage = lazy(() => import('./pages/LandingPage.jsx').then((m) => ({ default: m.LandingPage })));
 const TemplatesPage = lazy(() => import('./pages/TemplatesPage.jsx').then((m) => ({ default: m.TemplatesPage })));
@@ -19,15 +20,16 @@ const AccountPage = lazy(() => import('./pages/AccountPage.jsx').then((m) => ({ 
 
 export default function App() {
   return (
-    <Layout>
-      <Suspense
-        fallback={
-          <div className="section mt-10 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-pink-500" />
-          </div>
-        }
-      >
-        <Routes>
+    <ToastProvider>
+      <Layout>
+        <Suspense
+          fallback={
+            <div className="section mt-10 flex items-center justify-center">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-pink-500" />
+            </div>
+          }
+        >
+          <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/templates" element={<TemplatesPage />} />
           <Route path="/create" element={<TemplatesPage />} />
@@ -68,6 +70,7 @@ export default function App() {
         </Routes>
       </Suspense>
     </Layout>
+  </ToastProvider>
   );
 }
 
