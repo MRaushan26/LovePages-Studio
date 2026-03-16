@@ -102,18 +102,21 @@ export function CustomizePage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const customization = {
+      name: form.name,
+      message: form.message,
+      themeColor: form.themeColor,
+      music: form.music,
+      // Prefer uploaded Cloudinary URLs, fall back to local previews for development
+      photos: form.photos.map((p) => p.url || p.previewUrl)
+    };
+
     navigate('/preview', {
       state: {
         templateId,
         template,
-        customization: {
-          name: form.name,
-          message: form.message,
-          themeColor: form.themeColor,
-          music: form.music,
-          // Prefer uploaded Cloudinary URLs, fall back to local previews for development
-          photos: form.photos.map((p) => p.url || p.previewUrl)
-        }
+        customization
       }
     });
   };

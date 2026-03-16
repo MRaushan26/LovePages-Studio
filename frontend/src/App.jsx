@@ -31,6 +31,7 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/templates" element={<TemplatesPage />} />
           <Route path="/create" element={<TemplatesPage />} />
+          <Route path="/customize/:templateId" element={<CustomizePage />} />
           <Route path="/preview" element={<PreviewPage />} />
           <Route path="/site/:slug" element={<GeneratedSitePage />} />
 

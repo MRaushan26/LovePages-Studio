@@ -35,11 +35,19 @@ export function GeneratedSitePage() {
   const { slug } = useParams();
   const location = useLocation();
   const justCreated = location.state?.justCreated;
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const fallbackData = location.state?.siteData;
+
+  const [data, setData] = useState(fallbackData || null);
+  const [loading, setLoading] = useState(!fallbackData);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    // If we already have data from navigation state, skip the API call.
+    if (data) {
+      setLoading(false);
+      return;
+    }
+
     const fetchSite = async () => {
       try {
         setLoading(true);
@@ -52,7 +60,7 @@ export function GeneratedSitePage() {
       }
     };
     fetchSite();
-  }, [slug]);
+  }, [data, slug]);
 
   const countdown = useCountdown(data?.countdownTo);
 

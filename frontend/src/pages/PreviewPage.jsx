@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import api from '../services/api.js';
 
@@ -22,27 +22,42 @@ export function PreviewPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const audioRef = useRef(null);
-  const state = location.state;
+  const state = location.state || {};
 
-  useEffect(() => {
-    if (!state) {
-      navigate('/templates');
-    }
-  }, [state, navigate]);
-
-  if (!state) return null;
-
-  const { customization, template } = state;
+  const template = state.template;
+  const customization = state.customization;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!template || !customization) {
+      setError('Missing preview data. Please start again from the template picker.');
+    }
+  }, [template, customization]);
+
+  const canGenerate = Boolean(template && customization);
+
+  if (!canGenerate) {
+    return (
+      <section className="section mt-10 text-center text-slate-300">
+        <p className="text-sm">Missing preview information. Please create a surprise again.</p>
+        <p className="mt-2 text-sm">
+          <Link to="/create" className="font-semibold text-love-pink hover:text-love-purple">
+            Start over from templates
+          </Link>
+          .
+        </p>
+      </section>
+    );
+  }
 
   const handleGenerateLink = async () => {
     try {
       setLoading(true);
       setError('');
       const res = await api.post('/websites', {
-        templateId: template?._id || template?.slug,
+        templateId: template._id || template.slug,
         recipientName: customization.name,
         message: customization.message,
         themeColor: customization.themeColor,
@@ -50,7 +65,17 @@ export function PreviewPage() {
         photos: customization.photos
       });
       const { slug } = res.data;
-      navigate(`/site/${slug}`, { replace: true, state: { justCreated: true } });
+      navigate(`/site/${slug}`, {
+        replace: true,
+        state: {
+          justCreated: true,
+          siteData: {
+            template,
+            customization,
+            slug
+          }
+        }
+      });
     } catch (e) {
       setError(e.response?.data?.message || 'Something went wrong. Please try again.');
     } finally {
@@ -127,16 +152,22 @@ export function PreviewPage() {
             </div>
             <p>
               Background music:{' '}
-              <span className="font-medium text-slate-100">{customization.music.label}</span>
+              <span className="font-medium text-slate-100">
+                {customization.music?.label || 'No music selected'}
+              </span>
             </p>
-            <audio
-              ref={audioRef}
-              controls
-              className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/80 p-2"
-            >
-              <source src={customization.music.url} type="audio/mpeg" />
-              Your browser does not support the audio element.
-            </audio>
+            {customization.music?.url ? (
+              <audio
+                ref={audioRef}
+                controls
+                className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/80 p-2"
+              >
+                <source src={customization.music.url} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            ) : (
+              <p className="text-xs text-slate-400">No music file selected yet.</p>
+            )}
             <p className="mt-3 text-[11px] text-slate-400">
               On the final website, we will remove the watermark, optimize your photos for fast
               loading, and host the page on a unique URL you can share.
