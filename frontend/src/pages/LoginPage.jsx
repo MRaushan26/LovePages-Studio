@@ -28,7 +28,13 @@ export function LoginPage() {
       login(res.data);
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Unable to login. Please try again.');
+      // Fallback to local storage login when backend isn't available
+      const ok = loginWithLocal(form);
+      if (ok) {
+        navigate(from, { replace: true });
+      } else {
+        setError(err.response?.data?.message || 'Unable to login. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

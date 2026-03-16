@@ -41,7 +41,17 @@ export function SignupPage() {
       login(res.data);
       navigate('/create', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Unable to sign up. Please try again.');
+      // Fallback to local signup when backend isn't available
+      const result = signupWithLocal({
+        name: form.name,
+        email: form.email,
+        password: form.password
+      });
+      if (result.success) {
+        navigate('/create', { replace: true });
+      } else {
+        setError(result.message || 'Unable to sign up. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
