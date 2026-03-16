@@ -52,6 +52,23 @@ export function PreviewPage() {
     );
   }
 
+  const createLocalSite = () => {
+    const baseName = `${customization.name || 'surprise'}`
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .slice(0, 40);
+    const baseEvent = (template?.category || 'surprise').toLowerCase();
+    const random = Math.random().toString(36).slice(2, 6);
+    const slug = `${baseName}-${baseEvent}-${random}`;
+
+    const stored = JSON.parse(localStorage.getItem('lp_sites') || '{}');
+    stored[slug] = { template, customization, createdAt: Date.now() };
+    localStorage.setItem('lp_sites', JSON.stringify(stored));
+
+    return slug;
+  };
+
   const handleGenerateLink = async () => {
     try {
       setLoading(true);
@@ -77,7 +94,20 @@ export function PreviewPage() {
         }
       });
     } catch (e) {
-      setError(e.response?.data?.message || 'Something went wrong. Please try again.');
+      console.warn('Create website API failed, falling back to local storage.', e);
+      const slug = createLocalSite();
+      setError('No backend available; using local demo storage.');
+      navigate(`/site/${slug}`, {
+        replace: true,
+        state: {
+          justCreated: true,
+          siteData: {
+            template,
+            customization,
+            slug
+          }
+        }
+      });
     } finally {
       setLoading(false);
     }

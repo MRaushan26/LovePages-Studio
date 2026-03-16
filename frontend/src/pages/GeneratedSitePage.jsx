@@ -54,7 +54,13 @@ export function GeneratedSitePage() {
         const res = await api.get(`/websites/${slug}`);
         setData(res.data);
       } catch (e) {
-        setError(e.response?.data?.message || 'Unable to load this surprise page.');
+        // Fallback to local storage if backend is unavailable.
+        const stored = JSON.parse(localStorage.getItem('lp_sites') || '{}');
+        if (stored[slug]) {
+          setData(stored[slug]);
+        } else {
+          setError(e.response?.data?.message || 'Unable to load this surprise page.');
+        }
       } finally {
         setLoading(false);
       }
