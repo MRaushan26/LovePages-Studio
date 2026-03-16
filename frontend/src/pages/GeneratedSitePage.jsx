@@ -84,10 +84,19 @@ export function GeneratedSitePage() {
     );
   }
 
-  const { recipientName, message, photos = [], music, themeColor, endingMessage, template } = data;
+  const template = data.template;
+  const customization = data.customization || data;
+
+  const recipientName = customization.name || 'Your special someone';
+  const message = customization.message || '';
+  const photos = customization.photos || [];
+  const music = customization.music || {};
+  const themeColor = customization.themeColor || template?.baseConfig?.themeColor || '#f43f5e';
+  const endingMessage = customization.endingMessage;
+
   const shareImage = photos[0] || template?.previewImageUrl || '';
   const shareTitle = `A surprise for ${recipientName}`;
-  const shareDescription = message.slice(0, 120);
+  const shareDescription = (message || '').slice(0, 120);
   const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   return (
