@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout.jsx';
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
 import { ToastProvider } from './components/ToastContext.jsx';
+import { PageTransition } from './components/PageTransition.jsx';
 
 const LandingPage = lazy(() => import('./pages/LandingPage.jsx').then((m) => ({ default: m.LandingPage })));
 const TemplatesPage = lazy(() => import('./pages/TemplatesPage.jsx').then((m) => ({ default: m.TemplatesPage })));
@@ -31,13 +32,16 @@ export default function App() {
           }
         >
           <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/templates" element={<TemplatesPage />} />
-          <Route path="/create" element={<TemplatesPage />} />
-          <Route path="/customize/:templateId" element={<CustomizePage />} />
-          <Route path="/preview" element={<PreviewPage />} />
-          <Route path="/site/:slug" element={<GeneratedSitePage />} />
-          <Route path="/about" element={<AboutPage />} />
+          <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
+          <Route path="/templates" element={<PageTransition><TemplatesPage /></PageTransition>} />
+          <Route path="/create" element={<PageTransition><TemplatesPage /></PageTransition>} />
+          <Route
+            path="/customize/:templateId"
+            element={<PageTransition><CustomizePage /></PageTransition>}
+          />
+          <Route path="/preview" element={<PageTransition><PreviewPage /></PageTransition>} />
+          <Route path="/site/:slug" element={<PageTransition><GeneratedSitePage /></PageTransition>} />
+          <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
 
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />

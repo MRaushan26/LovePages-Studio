@@ -18,6 +18,38 @@ body {
   @apply inline-flex items-center justify-center rounded-full bg-gradient-to-r from-love-pink to-love-purple px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-pink-500/30 transition hover:shadow-pink-500/50 hover:-translate-y-0.5;
 }
 
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.btn-primary:hover::after {
+  opacity: 0.15;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6), transparent 55%);
+}
+
+@keyframes page-glow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-animated {
+  background: linear-gradient(130deg, rgba(248,113,113,0.25), rgba(144,238,144,0.2), rgba(147,197,253,0.25));
+  background-size: 200% 200%;
+  animation: page-glow 14s ease infinite;
+}
+
 .btn-ghost {
   @apply inline-flex items-center justify-center rounded-full border border-slate-700 px-6 py-2.5 text-sm font-semibold text-slate-100/90 hover:bg-slate-800/70 transition;
 }
