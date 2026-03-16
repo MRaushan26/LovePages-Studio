@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation, useParams } from 'react-router-dom';
 import api from '../services/api.js';
+import { ConfettiBurst } from '../components/ConfettiBurst.jsx';
 import { FloatingHearts } from '../components/FloatingHearts.jsx';
 import { ShareLinkModal } from '../components/ShareLinkModal.jsx';
 import { useToast } from '../components/ToastContext.jsx';
@@ -44,6 +45,7 @@ export function GeneratedSitePage() {
   const [loading, setLoading] = useState(!fallbackData);
   const [error, setError] = useState('');
   const [shareOpen, setShareOpen] = useState(false);
+  const [confettiActive, setConfettiActive] = useState(false);
 
   useEffect(() => {
     // If we already have data from navigation state, skip the API call.
@@ -71,6 +73,14 @@ export function GeneratedSitePage() {
     };
     fetchSite();
   }, [data, slug]);
+
+  useEffect(() => {
+    if (!justCreated) return;
+
+    // Only show confetti once per create flow.
+    setConfettiActive(true);
+    toast.addToast('Your surprise is live! Share the link with love.', 'success');
+  }, [justCreated, toast]);
 
   const countdown = useCountdown(data?.countdownTo);
 
@@ -112,6 +122,7 @@ export function GeneratedSitePage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50">
+      <ConfettiBurst active={confettiActive} />
       <Helmet>
         <title>{shareTitle}</title>
         <meta property="og:type" content="website" />
