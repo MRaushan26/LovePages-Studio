@@ -52,16 +52,53 @@ export function PreviewPage() {
     );
   }
 
-  const normalizePhotos = (photos) => {
-    if (!Array.isArray(photos)) return [];
-    return photos.map((p) => {
-      if (!p) return '';
-      if (typeof p === 'string') return p;
-      return p.url || p.previewUrl || '';
-    });
+  const toDataUrl = (input) => {
+    if (!input) return Promise.resolve('');
+
+    // Keep already-serializable strings
+    if (typeof input === 'string') {
+      if (input.startsWith('data:')) return Promise.resolve(input);
+      if (!input.startsWith('blob:')) return Promise.resolve(input);
+
+      // Convert blob URL to data URL
+      return fetch(input)
+        .then((res) => res.blob())
+        .then(
+          (blob) =>
+            new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result || '');
+              reader.readAsDataURL(blob);
+            })
+        )
+        .catch(() => input);
+    }
+
+    // Handle File objects
+    if (input instanceof File || input instanceof Blob) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result || '');
+        reader.readAsDataURL(input);
+      });
+    }
+
+    // Handle objects with url / previewUrl
+    if (typeof input === 'object') {
+      const url = input.url || input.previewUrl;
+      return toDataUrl(url);
+    }
+
+    return Promise.resolve('');
   };
 
-  const createLocalSite = () => {
+  const normalizePhotosAsync = async (photos) => {
+    if (!Array.isArray(photos)) return [];
+    const results = await Promise.all(photos.map((p) => toDataUrl(p)));
+    return results.filter(Boolean);
+  };
+
+  const createLocalSite = async () => {
     const baseName = `${customization.name || 'surprise'}`
       .trim()
       .toLowerCase()
@@ -76,7 +113,7 @@ export function PreviewPage() {
       template,
       customization: {
         ...customization,
-        photos: normalizePhotos(customization.photos)
+        photos: await normalizePhotosAsync(customization.photos)
       },
       createdAt: Date.now()
     };
@@ -111,7 +148,7 @@ export function PreviewPage() {
       });
     } catch (e) {
       console.warn('Create website API failed, falling back to local storage.', e);
-      const slug = createLocalSite();
+      const slug = await createLocalSite();
       setError('No backend available; using local demo storage.');
       navigate(`/site/${slug}`, {
         replace: true,
