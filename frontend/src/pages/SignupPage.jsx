@@ -39,7 +39,7 @@ export function SignupPage() {
         password: form.password
       });
       login(res.data);
-      navigate('/dashboard', { replace: true });
+      navigate('/create', { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Unable to sign up. Please try again.');
     } finally {

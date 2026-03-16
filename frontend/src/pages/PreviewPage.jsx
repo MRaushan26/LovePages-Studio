@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
+import api from '../services/api.js';
 
 function CountdownPreview() {
   const [secondsLeft] = useState(3600);
@@ -33,10 +34,28 @@ export function PreviewPage() {
 
   const { customization, template } = state;
 
-  const handleProceedToPayment = () => {
-    navigate('/payment', {
-      state
-    });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleGenerateLink = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const res = await api.post('/websites', {
+        templateId: template?._id || template?.slug,
+        recipientName: customization.name,
+        message: customization.message,
+        themeColor: customization.themeColor,
+        music: customization.music,
+        photos: customization.photos
+      });
+      const { slug } = res.data;
+      navigate(`/site/${slug}`, { replace: true, state: { justCreated: true } });
+    } catch (e) {
+      setError(e.response?.data?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,8 +65,9 @@ export function PreviewPage() {
         This is how your surprise website will feel
       </h1>
       <p className="mt-2 max-w-2xl text-sm text-slate-400">
-        We have added a watermark to this preview. After payment, you will receive a clean,
-        shareable link like <span className="font-mono">lovepages.site/ananya-birthday</span>.
+        We have added a watermark to this preview. Generate your shareable link below and it will
+        be instantly available at a unique URL like{' '}
+        <span className="font-mono">lovepages.site/ananya-birthday</span>.
       </p>
 
       <div className="card mt-6 overflow-hidden">
@@ -121,12 +141,14 @@ export function PreviewPage() {
               On the final website, we will remove the watermark, optimize your photos for fast
               loading, and host the page on a unique URL you can share.
             </p>
+            {error && <p className="text-xs text-red-400">{error}</p>}
             <button
               type="button"
-              onClick={handleProceedToPayment}
-              className="btn-primary mt-2 w-full justify-center"
+              disabled={loading}
+              onClick={handleGenerateLink}
+              className="btn-primary mt-2 w-full justify-center disabled:opacity-60"
             >
-              Looks good · Continue to payment
+              {loading ? 'Generating link…' : 'Looks good · Generate shareable link'}
             </button>
           </div>
         </div>

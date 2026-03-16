@@ -7,9 +7,7 @@ const LandingPage = lazy(() => import('./pages/LandingPage.jsx').then((m) => ({ 
 const TemplatesPage = lazy(() => import('./pages/TemplatesPage.jsx').then((m) => ({ default: m.TemplatesPage })));
 const CustomizePage = lazy(() => import('./pages/CustomizePage.jsx').then((m) => ({ default: m.CustomizePage })));
 const PreviewPage = lazy(() => import('./pages/PreviewPage.jsx').then((m) => ({ default: m.PreviewPage })));
-const PaymentPage = lazy(() => import('./pages/PaymentPage.jsx').then((m) => ({ default: m.PaymentPage })));
 const GeneratedSitePage = lazy(() => import('./pages/GeneratedSitePage.jsx').then((m) => ({ default: m.GeneratedSitePage })));
-const PricingPage = lazy(() => import('./pages/PricingPage.jsx').then((m) => ({ default: m.PricingPage })));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard.jsx').then((m) => ({ default: m.AdminDashboard })));
 const SignupPage = lazy(() => import('./pages/SignupPage.jsx').then((m) => ({ default: m.SignupPage })));
 const LoginPage = lazy(() => import('./pages/LoginPage.jsx').then((m) => ({ default: m.LoginPage })));
@@ -32,9 +30,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/templates" element={<TemplatesPage />} />
-        <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/create" element={<TemplatesPage />} />
           <Route path="/preview" element={<PreviewPage />} />
-          <Route path="/payment" element={<PaymentPage />} />
           <Route path="/site/:slug" element={<GeneratedSitePage />} />
 
           <Route path="/signup" element={<SignupPage />} />

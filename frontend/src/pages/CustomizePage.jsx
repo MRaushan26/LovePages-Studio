@@ -125,8 +125,7 @@ export function CustomizePage() {
         Tell us about the person you are surprising
       </h1>
       <p className="mt-2 max-w-2xl text-sm text-slate-400">
-        We will use this information to generate a preview of your surprise website. You can tweak
-        things on the next step before payment.
+        We will use this information to generate a preview of your surprise website.
       </p>
 
       <form
@@ -260,8 +259,8 @@ export function CustomizePage() {
           </div>
 
           <div className="pt-2 text-xs text-slate-400">
-            You will be able to preview everything with a watermark before paying. We will securely
-            upload your photos when you complete the payment.
+            You will be able to preview everything and generate a shareable link instantly. We will
+            securely upload your photos as part of creating your surprise page.
           </div>
 
           <button type="submit" className="btn-primary w-full justify-center">

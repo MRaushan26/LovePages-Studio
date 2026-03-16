@@ -12,7 +12,7 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const from = location.state?.from || '/dashboard';
+  const from = location.state?.from || '/create';
 
   const handleChange = (e) => {
     const { name, value } = e.target;

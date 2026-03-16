@@ -45,7 +45,7 @@ export function LandingPage() {
             anniversaries, and friendship memories. No coding, just your photos, words, and music.
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <Link to="/templates" className="btn-primary">
+            <Link to="/create" className="btn-primary">
               Start with a template
             </Link>
             <a href="#how-it-works" className="btn-ghost">
@@ -63,7 +63,7 @@ export function LandingPage() {
             </div>
             <div className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-love-gold" />
-              <span>Starting at just ₹99</span>
+              <span>Completely free to create</span>
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@ export function LandingPage() {
               <h3 className="text-sm font-semibold text-slate-50">{cat.title}</h3>
               <p className="text-xs text-slate-400">{cat.description}</p>
               <Link
-                to="/templates"
+                to="/create"
                 state={{ category: cat.key }}
                 className="mt-auto text-xs font-medium text-love-pink hover:text-love-gold"
               >

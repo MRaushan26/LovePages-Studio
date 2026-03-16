@@ -21,9 +21,6 @@ export function TemplateCard({ template }) {
       <div className="space-y-2 pt-4">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-semibold text-slate-50">{template.name}</h3>
-          <span className="rounded-full bg-black/40 px-3 py-1 text-[11px] text-slate-200">
-            ₹{template.priceTier || template.price || 149}
-          </span>
         </div>
         <p className="text-xs text-slate-300">{template.description}</p>
       </div>

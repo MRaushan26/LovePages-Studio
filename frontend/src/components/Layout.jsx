@@ -3,8 +3,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 
 const navItems = [
   { to: '/', label: 'Home' },
-  { to: '/templates', label: 'Templates' },
-  { to: '/pricing', label: 'Pricing' }
+  { to: '/create', label: 'Create' }
 ];
 
 export function Layout({ children }) {
@@ -83,7 +82,7 @@ export function Layout({ children }) {
                 Logout
               </button>
             )}
-            <Link to="/templates" className="btn-primary text-xs sm:text-sm">
+            <Link to="/create" className="btn-primary text-xs sm:text-sm">
               Create a surprise
             </Link>
           </div>

@@ -2,7 +2,6 @@ import express from 'express';
 import { nanoid } from 'nanoid';
 import { GeneratedWebsite } from '../models/GeneratedWebsite.js';
 import { Template } from '../models/Template.js';
-import { Order } from '../models/Order.js';
 import { authMiddleware, optionalAuth } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -17,8 +16,7 @@ router.post('/', optionalAuth, async (req, res, next) => {
       music,
       themeColor,
       countdownTo,
-      endingMessage,
-      amount = 149
+      endingMessage
     } = req.body;
 
     if (!recipientName || !message) {
@@ -40,18 +38,6 @@ router.post('/', optionalAuth, async (req, res, next) => {
       slug = `${baseName}-${baseEvent}-${randomSuffix}-${suffix++}`;
     }
 
-    const now = new Date();
-    const expiryDate = new Date(now);
-    if (amount === 99) {
-      expiryDate.setDate(expiryDate.getDate() + 30);
-    } else if (amount === 149) {
-      expiryDate.setMonth(expiryDate.getMonth() + 6);
-    } else if (amount === 199) {
-      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-    } else {
-      expiryDate.setDate(expiryDate.getDate() + 30);
-    }
-
     const website = await GeneratedWebsite.create({
       slug,
       recipientName,
@@ -63,16 +49,7 @@ router.post('/', optionalAuth, async (req, res, next) => {
       template: template?._id,
       countdownTo: countdownTo || null,
       endingMessage,
-      priceTier: amount,
-      expiryDate
-    });
-
-    await Order.create({
-      website: website._id,
-      user: req.user?._id,
-      amount,
-      status: 'paid',
-      paymentReference: `sim_${nanoid(10)}`
+      expiryDate: null
     });
 
     res.status(201).json({ slug: website.slug, id: website._id });
