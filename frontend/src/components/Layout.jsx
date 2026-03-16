@@ -3,7 +3,8 @@ import { useAuth } from '../context/AuthContext.jsx';
 
 const navItems = [
   { to: '/', label: 'Home' },
-  { to: '/create', label: 'Create' }
+  { to: '/create', label: 'Create' },
+  { to: '/about', label: 'About' }
 ];
 
 export function Layout({ children }) {

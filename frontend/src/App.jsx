@@ -9,6 +9,7 @@ const TemplatesPage = lazy(() => import('./pages/TemplatesPage.jsx').then((m) =>
 const CustomizePage = lazy(() => import('./pages/CustomizePage.jsx').then((m) => ({ default: m.CustomizePage })));
 const PreviewPage = lazy(() => import('./pages/PreviewPage.jsx').then((m) => ({ default: m.PreviewPage })));
 const GeneratedSitePage = lazy(() => import('./pages/GeneratedSitePage.jsx').then((m) => ({ default: m.GeneratedSitePage })));
+const AboutPage = lazy(() => import('./pages/AboutPage.jsx').then((m) => ({ default: m.AboutPage })));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard.jsx').then((m) => ({ default: m.AdminDashboard })));
 const SignupPage = lazy(() => import('./pages/SignupPage.jsx').then((m) => ({ default: m.SignupPage })));
 const LoginPage = lazy(() => import('./pages/LoginPage.jsx').then((m) => ({ default: m.LoginPage })));
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="/customize/:templateId" element={<CustomizePage />} />
           <Route path="/preview" element={<PreviewPage />} />
           <Route path="/site/:slug" element={<GeneratedSitePage />} />
+          <Route path="/about" element={<AboutPage />} />
 
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
