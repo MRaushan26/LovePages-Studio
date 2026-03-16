@@ -46,6 +46,7 @@ export function GeneratedSitePage() {
   const [error, setError] = useState('');
   const [shareOpen, setShareOpen] = useState(false);
   const [confettiActive, setConfettiActive] = useState(false);
+  const [offlineMode, setOfflineMode] = useState(false);
 
   useEffect(() => {
     // If we already have data from navigation state, skip the API call.
@@ -63,6 +64,7 @@ export function GeneratedSitePage() {
         // Fallback to local storage if backend is unavailable.
         const stored = JSON.parse(localStorage.getItem('lp_sites') || '{}');
         if (stored[slug]) {
+          setOfflineMode(true);
           setData(stored[slug]);
         } else {
           setError(e.response?.data?.message || 'Unable to load this surprise page.');
@@ -149,6 +151,12 @@ export function GeneratedSitePage() {
           <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
             A LovePages Studio surprise
           </p>
+          {offlineMode && (
+            <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-slate-900/70 px-3 py-1 text-xs text-love-pink">
+              <span className="h-2 w-2 rounded-full bg-love-pink" />
+              Offline demo mode — this page is stored locally on this device.
+            </div>
+          )}
           <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
             For{' '}
             <span

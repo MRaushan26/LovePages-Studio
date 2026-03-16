@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import api from '../services/api.js';
+import { useToast } from '../components/ToastContext.jsx';
 
 function CountdownPreview() {
   const [secondsLeft] = useState(3600);
@@ -29,6 +30,8 @@ export function PreviewPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [demoMode, setDemoMode] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     if (!template || !customization) {
@@ -148,8 +151,10 @@ export function PreviewPage() {
       });
     } catch (e) {
       console.warn('Create website API failed, falling back to local storage.', e);
+      setDemoMode(true);
       const slug = await createLocalSite();
       setError('No backend available; using local demo storage.');
+      toast.addToast('Offline demo mode: your surprise is stored locally.', 'info');
       navigate(`/site/${slug}`, {
         replace: true,
         state: {
@@ -177,6 +182,13 @@ export function PreviewPage() {
         be instantly available at a unique URL like{' '}
         <span className="font-mono">lovepages.site/ananya-birthday</span>.
       </p>
+
+      {demoMode && (
+        <div className="mt-6 rounded-2xl border border-love-pink/40 bg-slate-900/60 px-4 py-3 text-sm text-love-pink">
+          You’re in <span className="font-semibold">offline demo mode</span>. Your creation is stored locally on this
+          device and won’t be accessible from other browsers.
+        </div>
+      )}
 
       <div className="card mt-6 overflow-hidden">
         <div
