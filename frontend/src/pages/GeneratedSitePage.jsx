@@ -87,12 +87,19 @@ export function GeneratedSitePage() {
   const template = data.template;
   const customization = data.customization || data;
 
-  const recipientName = customization.name || 'Your special someone';
-  const message = customization.message || '';
-  const photos = customization.photos || [];
-  const music = customization.music || {};
-  const themeColor = customization.themeColor || template?.baseConfig?.themeColor || '#f43f5e';
-  const endingMessage = customization.endingMessage;
+  const recipientName = customization?.name || 'Your special someone';
+  const message = customization?.message || '';
+
+  const getPhotoUrl = (p) => {
+    if (!p) return '';
+    if (typeof p === 'string') return p;
+    return p.url || p.previewUrl || '';
+  };
+
+  const photos = (customization?.photos || []).map(getPhotoUrl).filter(Boolean);
+  const music = customization?.music || {};
+  const themeColor = customization?.themeColor || template?.baseConfig?.themeColor || '#f43f5e';
+  const endingMessage = customization?.endingMessage;
 
   const shareImage = photos[0] || template?.previewImageUrl || '';
   const shareTitle = `A surprise for ${recipientName}`;
@@ -165,9 +172,25 @@ export function GeneratedSitePage() {
           )}
 
           {justCreated && (
-            <p className="mt-4 text-xs text-emerald-400">
-              Your link is live! You can copy the URL from your browser bar and share it.
-            </p>
+            <div className="mt-4 flex flex-col items-center gap-2">
+              <p className="text-xs text-emerald-400">
+                Your link is live! Click below to copy the URL and share it.
+              </p>
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(shareUrl);
+                    alert('Link copied to clipboard!');
+                  } catch {
+                    alert('Unable to copy automatically. Please copy the URL manually.');
+                  }
+                }}
+                className="btn-primary rounded-full px-4 py-2 text-xs"
+              >
+                Copy shareable link
+              </button>
+            </div>
           )}
         </section>
 

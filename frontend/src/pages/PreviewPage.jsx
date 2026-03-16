@@ -52,6 +52,15 @@ export function PreviewPage() {
     );
   }
 
+  const normalizePhotos = (photos) => {
+    if (!Array.isArray(photos)) return [];
+    return photos.map((p) => {
+      if (!p) return '';
+      if (typeof p === 'string') return p;
+      return p.url || p.previewUrl || '';
+    });
+  };
+
   const createLocalSite = () => {
     const baseName = `${customization.name || 'surprise'}`
       .trim()
@@ -63,7 +72,14 @@ export function PreviewPage() {
     const slug = `${baseName}-${baseEvent}-${random}`;
 
     const stored = JSON.parse(localStorage.getItem('lp_sites') || '{}');
-    stored[slug] = { template, customization, createdAt: Date.now() };
+    stored[slug] = {
+      template,
+      customization: {
+        ...customization,
+        photos: normalizePhotos(customization.photos)
+      },
+      createdAt: Date.now()
+    };
     localStorage.setItem('lp_sites', JSON.stringify(stored));
 
     return slug;
